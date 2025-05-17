@@ -4,41 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sanitäter & Erste Hilfe</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            text-align: center;
-            padding: 30px;
-        }
-        .hidden { display: none; }
-        .container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            margin: auto;
-            max-width: 600px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h2 { color: #dc3545; }
-        input, button {
-            font-size: 16px;
-            padding: 10px;
-            margin: 10px;
-            width: 80%;
-            max-width: 300px;
-        }
-        button {
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn-red { background-color: #dc3545; color: white; }
-        .btn-blue { background-color: #007bff; color: white; }
-        .btn-gray { background-color: #6c757d; color: white; }
-        #response { font-size: 24px; font-weight: bold; color: green; margin-top: 20px; }
-        #warning { font-size: 16px; color: #6c757d; }
-    </style>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        text-align: center;
+        padding: 30px;
+        font-size: 20px; /* Basisgröße */
+    }
+
+    .hidden { display: none; }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin: auto;
+        max-width: 500px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        color: #dc3545;
+        font-size: 26px;
+        margin-bottom: 20px;
+    }
+
+    input, button {
+        font-size: 20px;
+        padding: 14px;
+        margin: 12px auto;
+        width: 90%;
+        max-width: 350px;
+    }
+
+    button {
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .btn-red {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-red:hover {
+        background-color: #c82333;
+    }
+
+    .btn-blue {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-blue:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-gray {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    #response {
+        font-size: 24px;
+        font-weight: bold;
+        color: green;
+        margin-top: 25px;
+    }
+
+    #warning {
+        font-size: 18px;
+        color: #6c757d;
+        margin-top: 10px;
+    }
+
+    p {
+        font-size: 20px;
+        line-height: 1.5;
+    }
+
+    .section {
+        margin-top: 25px;
+    }
+</style>
 </head>
 <body>
 
