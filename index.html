@@ -1,141 +1,18 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanitäter & Erste Hilfe</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        text-align: center;
-        padding: 30px;
-        font-size: 20px; /* Basisgröße */
-    }
-
-    .hidden { display: none; }
-
-    .container {
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        margin: auto;
-        max-width: 500px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-        color: #dc3545;
-        font-size: 26px;
-        margin-bottom: 20px;
-    }
-
-    input, button {
-        font-size: 20px;
-        padding: 14px;
-        margin: 12px auto;
-        width: 90%;
-        max-width: 350px;
-    }
-
-    button {
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .btn-red {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .btn-red:hover {
-        background-color: #c82333;
-    }
-
-    .btn-blue {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn-blue:hover {
-        background-color: #0056b3;
-    }
-
-    .btn-gray {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    #response {
-        font-size: 24px;
-        font-weight: bold;
-        color: green;
-        margin-top: 25px;
-    }
-
-    #warning {
-        font-size: 18px;
-        color: #6c757d;
-        margin-top: 10px;
-    }
-
-    p {
-        font-size: 20px;
-        line-height: 1.5;
-    }
-
-    .section {
-        margin-top: 25px;
-    }
-</style>
-</head>
-<body>
-
-<!-- ALARM -->
-<div id="alarm-section" class="container">
-    <h2>🚨 Sanitäter Alarmieren</h2>
-    <form id="alarmForm">
-        <label for="raum">Raum:</label><br>
-        <input type="text" id="raum" placeholder="z. B. N01" required><br>
-        <button type="submit" class="btn-red">🚨 Alarm senden</button>
-    </form>
-    <p id="response"></p>
-    <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
-    <div class="section hidden" id="hilfeStartBtn">
-        <button class="btn-blue" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe Anleitung</button>
-    </div>
-</div>
-
-<!-- ANLEITUNG -->
-<div id="anleitung-section" class="container hidden">
-    <div id="anleitung-content">
-        <!-- Inhalt wird per JS geladen -->
-    </div>
-</div>
-
 <script>
-    // Alarm
-    document.getElementById("alarmForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-        const raum = document.getElementById("raum").value;
-        const url = "https://maker.ifttt.com/trigger/sanitaeter-alarm/with/key/cCSCnLcOR4Lqjv_YDsEOYr?value1=" + encodeURIComponent(raum);
-        fetch(url).finally(() => {
-            document.getElementById("alarmForm").style.display = "none";
-            document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
-            document.getElementById("warning").classList.remove("hidden");
-            document.getElementById("hilfeStartBtn").classList.remove("hidden");
-        });
-    });
+    let historyStack = [];
+    let metronomeInterval = null;
+    let timerInterval = null;
+    let timerTimeout = null;
 
-    // Anleitungsstruktur
     const steps = {
         eigenschutz: {
             title: "Eigenschutz geht vor!",
+            text: " ",
             next: "reaktion"
         },
         reaktion: {
             title: "Reagiert die Person auf Ansprechen und Anfassen?",
+            text: " ",
             nextOptions: [
                 { label: "✅ Ja, sie reagiert", next: "ersthilfe" },
                 { label: "❌ Nein, sie regiert nicht", next: "atmung-vorbereitung" }
@@ -166,6 +43,7 @@
         },
         "atmung-wiederholen": {
             title: "Prüfe die Atmung alle 2 Minuten 30!",
+            text: "Ein Timer startet automatisch.",
             next: "atmung-vorbereitung"
         },
         "keinatmung-notruf": {
@@ -175,12 +53,12 @@
         },
         reanimation: {
             title: "Beginne mit der Wiederbelebung!",
-            text: "• Druckpunkt: Mittig zwischen den Brustwarzen<br>• Tiefe: 5 cm, Tempo: 100–120/min<br> <br>• 30x tief drücken + vollständig entlasten<br>• 2x Beatmen: Kopf überstrecken, Mund öffnen, Nase zuhalten, umd in den Mund beatmen <br>• 30 : 2 im Wechsel, bis der Rettungsdienst eintrifft!",
+            text: "• Druckpunkt: Mittig zwischen den Brustwarzen<br>• Tiefe: 5 cm, Tempo: 100–120/min<br><br>• 30x tief drücken + vollständig entlasten<br>• 2x Beatmen: Kopf überstrecken, Mund öffnen, Nase zuhalten, in den Mund beatmen<br>• 30 : 2 im Wechsel, bis der Rettungsdienst eintrifft!",
             next: null
         }
     };
 
-    function showSection(id) {
+    function showSection() {
         document.getElementById("alarm-section").classList.add("hidden");
         document.getElementById("anleitung-section").classList.remove("hidden");
     }
@@ -188,7 +66,26 @@
     function showAnleitung(stepKey) {
         showSection();
         const step = steps[stepKey];
-        let html = `<h2>${step.title}</h2><p>${step.text}</p>`;
+        if (!step) return;
+
+        clearTimers(); // Stoppt vorherige Timer & Metronome
+
+        if (historyStack[historyStack.length - 1] !== stepKey) {
+            historyStack.push(stepKey);
+        }
+
+        let html = `<h2>${step.title}</h2><p>${step.text || "&nbsp;"}</p>`;
+
+        // Special: Metronom bei Reanimation
+        if (stepKey === "reanimation") {
+            html += `<button class="btn-blue" onclick="toggleMetronome(this)">🕒 Takt starten</button><br><br>`;
+        }
+
+        // Special: Timer bei „atmung-wiederholen“
+        if (stepKey === "atmung-wiederholen") {
+            html += `<p id="timerDisplay">⏳ 2:30</p>`;
+            startCountdown("timerDisplay", 150);
+        }
 
         if (step.next) {
             html += `<button class="btn-blue" onclick="showAnleitung('${step.next}')">Weiter</button>`;
@@ -198,10 +95,87 @@
             });
         }
 
-        html += `<br><button class="btn-gray" onclick="window.location.reload()">↩️ Zurück zum Anfang</button>`;
+        if (historyStack.length > 1) {
+            html += `<br><button class="btn-gray" onclick="goBack()">↩️ Zurück</button>`;
+        }
+
         document.getElementById("anleitung-content").innerHTML = html;
     }
+
+    function goBack() {
+        if (historyStack.length > 1) {
+            historyStack.pop(); // Aktuellen entfernen
+            const previous = historyStack.pop(); // Vorherigen aufrufen
+            showAnleitung(previous);
+        }
+    }
+
+    function toggleMetronome(button) {
+        if (metronomeInterval) {
+            clearInterval(metronomeInterval);
+            metronomeInterval = null;
+            button.textContent = "🕒 Takt starten";
+        } else {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const click = () => {
+                const o = context.createOscillator();
+                const g = context.createGain();
+                o.type = 'square';
+                o.frequency.setValueAtTime(1000, context.currentTime);
+                g.gain.setValueAtTime(0.2, context.currentTime);
+                o.connect(g).connect(context.destination);
+                o.start();
+                o.stop(context.currentTime + 0.05);
+            };
+            click();
+            metronomeInterval = setInterval(click, 545); // 110 BPM ≈ 545ms
+            button.textContent = "⏹️ Takt stoppen";
+        }
+    }
+
+    function startCountdown(displayId, durationSeconds) {
+        let remaining = durationSeconds;
+        const display = document.getElementById(displayId);
+        timerInterval = setInterval(() => {
+            const minutes = String(Math.floor(remaining / 60)).padStart(1, '0');
+            const seconds = String(remaining % 60).padStart(2, '0');
+            display.textContent = `⏳ ${minutes}:${seconds}`;
+            if (--remaining < 0) {
+                clearInterval(timerInterval);
+            }
+        }, 1000);
+
+        timerTimeout = setTimeout(() => {
+            const display = document.getElementById(displayId);
+            display.innerHTML = `<span style="color:red; animation: blink 1s infinite;">‼️ Atmung jetzt überprüfen!</span>`;
+        }, durationSeconds * 1000);
+    }
+
+    function clearTimers() {
+        if (timerInterval) clearInterval(timerInterval);
+        if (timerTimeout) clearTimeout(timerTimeout);
+        if (metronomeInterval) clearInterval(metronomeInterval);
+        metronomeInterval = null;
+    }
+
+    document.getElementById("alarmForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const raum = document.getElementById("raum").value;
+        const url = "https://maker.ifttt.com/trigger/sanitaeter-alarm/with/key/cCSCnLcOR4Lqjv_YDsEOYr?value1=" + encodeURIComponent(raum);
+        fetch(url).finally(() => {
+            document.getElementById("alarmForm").style.display = "none";
+            document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
+            document.getElementById("warning").classList.remove("hidden");
+            document.getElementById("hilfeStartBtn").classList.remove("hidden");
+        });
+    });
 </script>
 
-</body>
-</html>
+<!-- Blinkeffekt für „Atmung jetzt überprüfen“ -->
+<style>
+@keyframes blink {
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 1; }
+}
+</style>
