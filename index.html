@@ -1,3 +1,125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanitäter & Erste Hilfe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 30px;
+            font-size: 20px;
+        }
+
+        .hidden { display: none; }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: auto;
+            max-width: 500px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #dc3545;
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            font-size: 20px;
+            padding: 14px;
+            margin: 12px auto;
+            width: 90%;
+            max-width: 350px;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-red {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-red:hover {
+            background-color: #c82333;
+        }
+
+        .btn-blue {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-gray {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        #response {
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+            margin-top: 25px;
+        }
+
+        #warning {
+            font-size: 18px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        p {
+            font-size: 20px;
+            line-height: 1.5;
+        }
+
+        .section {
+            margin-top: 25px;
+        }
+
+        @keyframes blink {
+            0%   { opacity: 1; }
+            50%  { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ALARM -->
+<div id="alarm-section" class="container">
+    <h2>🚨 Sanitäter Alarmieren</h2>
+    <form id="alarmForm">
+        <label for="raum">Raum:</label><br>
+        <input type="text" id="raum" placeholder="z. B. N01" required><br>
+        <button type="submit" class="btn-red">🚨 Alarm senden</button>
+    </form>
+    <p id="response"></p>
+    <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
+    <div class="section hidden" id="hilfeStartBtn">
+        <button class="btn-blue" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe Anleitung</button>
+    </div>
+</div>
+
+<!-- ANLEITUNG -->
+<div id="anleitung-section" class="container hidden">
+    <div id="anleitung-content">
+        <!-- Inhalte kommen per JS -->
+    </div>
+</div>
+
 <script>
     let historyStack = [];
     let metronomeInterval = null;
@@ -68,7 +190,7 @@
         const step = steps[stepKey];
         if (!step) return;
 
-        clearTimers(); // Stoppt vorherige Timer & Metronome
+        clearTimers();
 
         if (historyStack[historyStack.length - 1] !== stepKey) {
             historyStack.push(stepKey);
@@ -76,12 +198,10 @@
 
         let html = `<h2>${step.title}</h2><p>${step.text || "&nbsp;"}</p>`;
 
-        // Special: Metronom bei Reanimation
         if (stepKey === "reanimation") {
             html += `<button class="btn-blue" onclick="toggleMetronome(this)">🕒 Takt starten</button><br><br>`;
         }
 
-        // Special: Timer bei „atmung-wiederholen“
         if (stepKey === "atmung-wiederholen") {
             html += `<p id="timerDisplay">⏳ 2:30</p>`;
             startCountdown("timerDisplay", 150);
@@ -104,8 +224,8 @@
 
     function goBack() {
         if (historyStack.length > 1) {
-            historyStack.pop(); // Aktuellen entfernen
-            const previous = historyStack.pop(); // Vorherigen aufrufen
+            historyStack.pop(); // aktuelle entfernen
+            const previous = historyStack.pop();
             showAnleitung(previous);
         }
     }
@@ -128,7 +248,7 @@
                 o.stop(context.currentTime + 0.05);
             };
             click();
-            metronomeInterval = setInterval(click, 545); // 110 BPM ≈ 545ms
+            metronomeInterval = setInterval(click, 545);
             button.textContent = "⏹️ Takt stoppen";
         }
     }
@@ -146,7 +266,6 @@
         }, 1000);
 
         timerTimeout = setTimeout(() => {
-            const display = document.getElementById(displayId);
             display.innerHTML = `<span style="color:red; animation: blink 1s infinite;">‼️ Atmung jetzt überprüfen!</span>`;
         }, durationSeconds * 1000);
     }
@@ -171,11 +290,5 @@
     });
 </script>
 
-<!-- Blinkeffekt für „Atmung jetzt überprüfen“ -->
-<style>
-@keyframes blink {
-    0%   { opacity: 1; }
-    50%  { opacity: 0; }
-    100% { opacity: 1; }
-}
-</style>
+</body>
+</html>
