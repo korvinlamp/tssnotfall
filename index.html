@@ -103,7 +103,7 @@
     <p id="response"></p>
     <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
     <div class="section hidden" id="hilfeStartBtn">
-        <button class="btn-blue" onclick="showAnleitung('eigenschutz')">📘 Erste Hilfe starten</button>
+        <button class="btn-blue" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe Anleitung</button>
     </div>
 </div>
 
@@ -132,15 +132,13 @@
     const steps = {
         eigenschutz: {
             title: "Eigenschutz geht vor!",
-            text: "Achten Sie auf Ihre Sicherheit. Gefahr für Sie? Dann nicht näher herantreten!",
             next: "reaktion"
         },
         reaktion: {
-            title: "Reaktion prüfen",
-            text: "Sprich die Person laut an und rüttle vorsichtig an der Schulter.",
+            title: "Reagiert die Person auf Ansprechen und Anfassen?",
             nextOptions: [
-                { label: "✅ Reagiert", next: "ersthilfe" },
-                { label: "❌ Keine Reaktion", next: "atmung-vorbereitung" }
+                { label: "✅ Ja, sie reagiert", next: "ersthilfe" },
+                { label: "❌ Nein, sie regiert nicht", next: "atmung-vorbereitung" }
             ]
         },
         ersthilfe: {
@@ -149,36 +147,35 @@
             next: null
         },
         "atmung-vorbereitung": {
-            title: "Atmung prüfen – Vorbereitung",
-            text: "• Person liegt auf dem Rücken<br>• Kopf überstreckt<br>• Brustkorb entkleidet<br><br>Prüfe die Atmung für 10 Sekunden.",
+            title: "Prüfe die Atmung für 10 Sekunden!",
+            text: "Person liegt auf dem Rücken & Oberkörper ist entkleidet",
             nextOptions: [
-                { label: "✅ Ja, atmet", next: "seitenlage" },
-                { label: "❌ Nein, atmet nicht", next: "keinatmung-notruf" }
+                { label: "✅ Ja, sie atmet", next: "seitenlage" },
+                { label: "❌ Nein, sie atmet nicht", next: "keinatmung-notruf" }
             ]
         },
         seitenlage: {
-            title: "Stabile Seitenlage",
-            text: "• Bein gegenüber anwinkeln<br>• Nahen Arm über Brust, fernen Arm an Wange<br>• Person auf Seite drehen<br>• Kopf überstreckt, Mund tiefster Punkt",
+            title: "Lege die Person in die Stabile Seitenlage!",
+            text: "Person liegt auf der Seite, Kopf ist überstreckt und Mundwinkel ist der tiefste Punkt.",
             next: "seitenlage-notruf"
         },
         "seitenlage-notruf": {
-            title: "Notruf & AED holen",
-            text: "Lass jemanden Notruf 112 wählen und einen AED holen. Bleibe bei der Person.",
+            title: "Notruf 112 & AED holen lassen",
+            text: "(Lass jemanden) Notruf 112 wählen und LASS einen Defibrillator (AED) holen. Bleibe bei der Person!",
             next: "atmung-wiederholen"
         },
         "atmung-wiederholen": {
-            title: "Atmung regelmäßig prüfen",
-            text: "Alle 2 Minuten Atmung erneut prüfen! Bei Atemstillstand: Reanimation starten.",
-            next: null
+            title: "Prüfe die Atmung alle 2 Minuten 30!",
+            next: "atmung-vorbereitung"
         },
         "keinatmung-notruf": {
-            title: "Keine Atmung – Sofort handeln!",
-            text: "Sofort Notruf 112 wählen und AED holen lassen. Reanimation vorbereiten.",
+            title: "Notruf 112 & AED holen lassen",
+            text: "(Lass jemanden) Notruf 112 wählen und LASS einen Defibrillator (AED) holen. Bleibe bei der Person!",
             next: "reanimation"
         },
         reanimation: {
-            title: "Reanimation starten",
-            text: "• 30x Herzdruck (Mitte Brustbein)<br>• Tiefe: mind. 5 cm, Tempo: 100–120/min<br>• Dann 2x Beatmung (wenn möglich)<br>• Wiederholen bis Hilfe eintrifft",
+            title: "Beginne mit der Wiederbelebung!",
+            text: "• Druckpunkt: Mittig zwischen den Brustwarzen<br>• Tiefe: 5 cm, Tempo: 100–120/min<br> <br>• 30x tief drücken + vollständig entlasten<br>• 2x Beatmen: Kopf überstrecken, Mund öffnen, Nase zuhalten, umd in den Mund beatmen <br>• 30 : 2 im Wechsel, bis der Rettungsdienst eintrifft!",
             next: null
         }
     };
