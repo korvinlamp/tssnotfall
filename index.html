@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanitäter & Erste Hilfe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 30px;
+        }
+        .hidden {
+            display: none;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: auto;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #dc3545;
+        }
+        input, button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            max-width: 300px;
+        }
+        button {
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-red {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-red:hover {
+            background-color: #c82333;
+        }
+        .btn-blue {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-blue:hover {
+            background-color: #0056b3;
+        }
+        .btn-gray {
+            background-color: #6c757d;
+            color: white;
+        }
+        .section {
+            margin-top: 20px;
+        }
+        #response {
+            font-weight: bold;
+            font-size: 24px;
+            color: green;
+            margin-top: 20px;
+        }
+        #warning {
+            font-size: 16px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sanitäter Alarmierung -->
+    <div id="alarm-section" class="container">
+        <h2>🚨 Sanitäter Alarmierung</h2>
+        <form id="alarmForm">
+            <label for="raum">Raum:</label><br>
+            <input type="text" id="raum" placeholder="z. B. N01" required><br>
+            <button type="submit" class="btn-red">🚨 Alarm senden</button>
+        </form>
+        <p id="response"></p>
+        <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
+        <div class="section">
+            <button class="btn-blue" onclick="showSection('hilfe-section')">📘 Erste Hilfe Anleitung</button>
+        </div>
+    </div>
+
+    <!-- Erste Hilfe Hauptansicht -->
+    <div id="hilfe-section" class="container hidden">
+        <h2>Erste Hilfe</h2>
+        <p>Folgen Sie den Anweisungen Schritt für Schritt.</p>
+        <button class="btn-blue" onclick="showAnleitung('start')">🧭 Anleitung starten</button><br>
+        <button class="btn-gray" onclick="showSection('alarm-section')">⬅️ Zurück</button>
+    </div>
+
+    <!-- Interaktive Erste Hilfe Anleitung -->
+    <div id="anleitung-section" class="container hidden">
+        <div id="anleitung-content">
+            <!-- Inhalte werden hier per JS geladen -->
+        </div>
+    </div>
+
+    <script>
+        function showSection(id) {
+            document.getElementById("alarm-section").classList.add("hidden");
+            document.getElementById("hilfe-section").classList.add("hidden");
+            document.getElementById("anleitung-section").classList.add("hidden");
+            document.getElementById(id).classList.remove("hidden");
+        }
+
+        // Alarm-Formular
+        document.getElementById("alarmForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var raum = document.getElementById("raum").value;
+            var url = "https://maker.ifttt.com/trigger/sanitaeter-alarm/with/key/cCSCnLcOR4Lqjv_YDsEOYr" +
+                      "?value1=" + encodeURIComponent(raum);
+
+            fetch(url)
+                .then(() => {
+                    document.getElementById("alarmForm").style.display = "none";
+                    document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
+                    document.getElementById("warning").classList.remove("hidden");
+                })
+                .catch(() => {
+                    document.getElementById("alarmForm").style.display = "none";
+                    document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
+                    document.getElementById("warning").classList.remove("hidden");
+                });
+        });
+
+        // Interaktive Anleitung
+        const steps = {
+            start: {
+                title: "1. Ansprechen & Reaktion prüfen",
+                text: "Sprechen Sie die Person laut an und rütteln Sie vorsichtig an der Schulter.",
+                next: "atmung"
+            },
+            atmung: {
+                title: "2. Atmung prüfen",
+                text: "Sehen, hören, fühlen – atmet die Person normal? Max. 10 Sekunden prüfen.",
+                nextOptions: [
+                    { label: "Keine Atmung", next: "reanimation" },
+                    { label: "Normale Atmung", next: "seitenlage" },
+                    { label: "Unsicher", next: "allgemein" }
+                ]
+            },
+            reanimation: {
+                title: "Reanimation",
+                text: "Starten Sie 30x Herzdruckmassage, dann 2x Beatmung (wenn möglich). Wiederholen.",
+                next: null
+            },
+            seitenlage: {
+                title: "Stabile Seitenlage",
+                text: "Bringen Sie die Person vorsichtig in die Seitenlage und überwachen Sie die Atmung.",
+                next: null
+            },
+            allgemein: {
+                title: "Allgemeine Maßnahmen",
+                text: "Bleiben Sie bei der Person, beruhigen Sie sie und alarmieren Sie weitere Hilfe.",
+                next: null
+            }
+        };
+
+        function showAnleitung(stepKey) {
+            showSection("anleitung-section");
+            const step = steps[stepKey];
+            let html = `<h2>${step.title}</h2><p>${step.text}</p>`;
+
+            if (step.next) {
+                html += `<button class="btn-blue" onclick="showAnleitung('${step.next}')">Weiter</button>`;
+            } else if (step.nextOptions) {
+                html += `<div>`;
+                step.nextOptions.forEach(opt => {
+                    html += `<button class="btn-blue" onclick="showAnleitung('${opt.next}')">${opt.label}</button><br>`;
+                });
+                html += `</div>`;
+            }
+
+            html += `<br><button class="btn-gray" onclick="showSection('hilfe-section')">⬅️ Zurück</button>`;
+            document.getElementById("anleitung-content").innerHTML = html;
+        }
+    </script>
+
+</body>
+</html>
