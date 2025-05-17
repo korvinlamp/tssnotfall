@@ -11,9 +11,7 @@
             text-align: center;
             padding: 30px;
         }
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
         .container {
             background: white;
             padding: 25px;
@@ -22,9 +20,7 @@
             max-width: 600px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h2 {
-            color: #dc3545;
-        }
+        h2 { color: #dc3545; }
         input, button {
             font-size: 16px;
             padding: 10px;
@@ -37,151 +33,128 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .btn-red {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-red:hover {
-            background-color: #c82333;
-        }
-        .btn-blue {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-blue:hover {
-            background-color: #0056b3;
-        }
-        .btn-gray {
-            background-color: #6c757d;
-            color: white;
-        }
-        .section {
-            margin-top: 20px;
-        }
-        #response {
-            font-weight: bold;
-            font-size: 24px;
-            color: green;
-            margin-top: 20px;
-        }
-        #warning {
-            font-size: 16px;
-            color: #6c757d;
-        }
+        .btn-red { background-color: #dc3545; color: white; }
+        .btn-blue { background-color: #007bff; color: white; }
+        .btn-gray { background-color: #6c757d; color: white; }
+        #response { font-size: 24px; font-weight: bold; color: green; margin-top: 20px; }
+        #warning { font-size: 16px; color: #6c757d; }
     </style>
 </head>
 <body>
 
-    <!-- Sanitäter Alarmierung -->
-    <div id="alarm-section" class="container">
-        <h2>🚨 Sanitäter Alarmierung</h2>
-        <form id="alarmForm">
-            <label for="raum">Raum:</label><br>
-            <input type="text" id="raum" placeholder="z. B. N01" required><br>
-            <button type="submit" class="btn-red">🚨 Alarm senden</button>
-        </form>
-        <p id="response"></p>
-        <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
-        <div class="section">
-            <button class="btn-blue" onclick="showSection('hilfe-section')">📘 Erste Hilfe Anleitung</button>
-        </div>
+<!-- ALARM -->
+<div id="alarm-section" class="container">
+    <h2>🚨 Sanitäter Alarmieren</h2>
+    <form id="alarmForm">
+        <label for="raum">Raum:</label><br>
+        <input type="text" id="raum" placeholder="z. B. N01" required><br>
+        <button type="submit" class="btn-red">🚨 Alarm senden</button>
+    </form>
+    <p id="response"></p>
+    <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
+    <div class="section hidden" id="hilfeStartBtn">
+        <button class="btn-blue" onclick="showAnleitung('eigenschutz')">📘 Erste Hilfe starten</button>
     </div>
+</div>
 
-    <!-- Erste Hilfe Hauptansicht -->
-    <div id="hilfe-section" class="container hidden">
-        <h2>Erste Hilfe</h2>
-        <p>Folgen Sie den Anweisungen Schritt für Schritt.</p>
-        <button class="btn-blue" onclick="showAnleitung('start')">🧭 Anleitung starten</button><br>
-        <button class="btn-gray" onclick="showSection('alarm-section')">⬅️ Zurück</button>
+<!-- ANLEITUNG -->
+<div id="anleitung-section" class="container hidden">
+    <div id="anleitung-content">
+        <!-- Inhalt wird per JS geladen -->
     </div>
+</div>
 
-    <!-- Interaktive Erste Hilfe Anleitung -->
-    <div id="anleitung-section" class="container hidden">
-        <div id="anleitung-content">
-            <!-- Inhalte werden hier per JS geladen -->
-        </div>
-    </div>
-
-    <script>
-        function showSection(id) {
-            document.getElementById("alarm-section").classList.add("hidden");
-            document.getElementById("hilfe-section").classList.add("hidden");
-            document.getElementById("anleitung-section").classList.add("hidden");
-            document.getElementById(id).classList.remove("hidden");
-        }
-
-        // Alarm-Formular
-        document.getElementById("alarmForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            var raum = document.getElementById("raum").value;
-            var url = "https://maker.ifttt.com/trigger/sanitaeter-alarm/with/key/cCSCnLcOR4Lqjv_YDsEOYr" +
-                      "?value1=" + encodeURIComponent(raum);
-
-            fetch(url)
-                .then(() => {
-                    document.getElementById("alarmForm").style.display = "none";
-                    document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
-                    document.getElementById("warning").classList.remove("hidden");
-                })
-                .catch(() => {
-                    document.getElementById("alarmForm").style.display = "none";
-                    document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
-                    document.getElementById("warning").classList.remove("hidden");
-                });
+<script>
+    // Alarm
+    document.getElementById("alarmForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const raum = document.getElementById("raum").value;
+        const url = "https://maker.ifttt.com/trigger/sanitaeter-alarm/with/key/cCSCnLcOR4Lqjv_YDsEOYr?value1=" + encodeURIComponent(raum);
+        fetch(url).finally(() => {
+            document.getElementById("alarmForm").style.display = "none";
+            document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
+            document.getElementById("warning").classList.remove("hidden");
+            document.getElementById("hilfeStartBtn").classList.remove("hidden");
         });
+    });
 
-        // Interaktive Anleitung
-        const steps = {
-            start: {
-                title: "1. Ansprechen & Reaktion prüfen",
-                text: "Sprechen Sie die Person laut an und rütteln Sie vorsichtig an der Schulter.",
-                next: "atmung"
-            },
-            atmung: {
-                title: "2. Atmung prüfen",
-                text: "Sehen, hören, fühlen – atmet die Person normal? Max. 10 Sekunden prüfen.",
-                nextOptions: [
-                    { label: "Keine Atmung", next: "reanimation" },
-                    { label: "Normale Atmung", next: "seitenlage" },
-                    { label: "Unsicher", next: "allgemein" }
-                ]
-            },
-            reanimation: {
-                title: "Reanimation",
-                text: "Starten Sie 30x Herzdruckmassage, dann 2x Beatmung (wenn möglich). Wiederholen.",
-                next: null
-            },
-            seitenlage: {
-                title: "Stabile Seitenlage",
-                text: "Bringen Sie die Person vorsichtig in die Seitenlage und überwachen Sie die Atmung.",
-                next: null
-            },
-            allgemein: {
-                title: "Allgemeine Maßnahmen",
-                text: "Bleiben Sie bei der Person, beruhigen Sie sie und alarmieren Sie weitere Hilfe.",
-                next: null
-            }
-        };
-
-        function showAnleitung(stepKey) {
-            showSection("anleitung-section");
-            const step = steps[stepKey];
-            let html = `<h2>${step.title}</h2><p>${step.text}</p>`;
-
-            if (step.next) {
-                html += `<button class="btn-blue" onclick="showAnleitung('${step.next}')">Weiter</button>`;
-            } else if (step.nextOptions) {
-                html += `<div>`;
-                step.nextOptions.forEach(opt => {
-                    html += `<button class="btn-blue" onclick="showAnleitung('${opt.next}')">${opt.label}</button><br>`;
-                });
-                html += `</div>`;
-            }
-
-            html += `<br><button class="btn-gray" onclick="showSection('hilfe-section')">⬅️ Zurück</button>`;
-            document.getElementById("anleitung-content").innerHTML = html;
+    // Anleitungsstruktur
+    const steps = {
+        eigenschutz: {
+            title: "Eigenschutz geht vor!",
+            text: "Achten Sie auf Ihre Sicherheit. Gefahr für Sie? Dann nicht näher herantreten!",
+            next: "reaktion"
+        },
+        reaktion: {
+            title: "Reaktion prüfen",
+            text: "Sprich die Person laut an und rüttle vorsichtig an der Schulter.",
+            nextOptions: [
+                { label: "✅ Reagiert", next: "ersthilfe" },
+                { label: "❌ Keine Reaktion", next: "atmung-vorbereitung" }
+            ]
+        },
+        ersthilfe: {
+            title: "Person reagiert",
+            text: "• Person beruhigen und betreuen<br>• Vor Unterkühlung schützen<br>• Notruf 112 wählen<br>• Beobachten",
+            next: null
+        },
+        "atmung-vorbereitung": {
+            title: "Atmung prüfen – Vorbereitung",
+            text: "• Person liegt auf dem Rücken<br>• Kopf überstreckt<br>• Brustkorb entkleidet<br><br>Prüfe die Atmung für 10 Sekunden.",
+            nextOptions: [
+                { label: "✅ Ja, atmet", next: "seitenlage" },
+                { label: "❌ Nein, atmet nicht", next: "keinatmung-notruf" }
+            ]
+        },
+        seitenlage: {
+            title: "Stabile Seitenlage",
+            text: "• Bein gegenüber anwinkeln<br>• Nahen Arm über Brust, fernen Arm an Wange<br>• Person auf Seite drehen<br>• Kopf überstreckt, Mund tiefster Punkt",
+            next: "seitenlage-notruf"
+        },
+        "seitenlage-notruf": {
+            title: "Notruf & AED holen",
+            text: "Lass jemanden Notruf 112 wählen und einen AED holen. Bleibe bei der Person.",
+            next: "atmung-wiederholen"
+        },
+        "atmung-wiederholen": {
+            title: "Atmung regelmäßig prüfen",
+            text: "Alle 2 Minuten Atmung erneut prüfen! Bei Atemstillstand: Reanimation starten.",
+            next: null
+        },
+        "keinatmung-notruf": {
+            title: "Keine Atmung – Sofort handeln!",
+            text: "Sofort Notruf 112 wählen und AED holen lassen. Reanimation vorbereiten.",
+            next: "reanimation"
+        },
+        reanimation: {
+            title: "Reanimation starten",
+            text: "• 30x Herzdruck (Mitte Brustbein)<br>• Tiefe: mind. 5 cm, Tempo: 100–120/min<br>• Dann 2x Beatmung (wenn möglich)<br>• Wiederholen bis Hilfe eintrifft",
+            next: null
         }
-    </script>
+    };
+
+    function showSection(id) {
+        document.getElementById("alarm-section").classList.add("hidden");
+        document.getElementById("anleitung-section").classList.remove("hidden");
+    }
+
+    function showAnleitung(stepKey) {
+        showSection();
+        const step = steps[stepKey];
+        let html = `<h2>${step.title}</h2><p>${step.text}</p>`;
+
+        if (step.next) {
+            html += `<button class="btn-blue" onclick="showAnleitung('${step.next}')">Weiter</button>`;
+        } else if (step.nextOptions) {
+            step.nextOptions.forEach(opt => {
+                html += `<button class="btn-blue" onclick="showAnleitung('${opt.next}')">${opt.label}</button><br>`;
+            });
+        }
+
+        html += `<br><button class="btn-gray" onclick="window.location.reload()">↩️ Zurück zum Anfang</button>`;
+        document.getElementById("anleitung-content").innerHTML = html;
+    }
+</script>
 
 </body>
 </html>
