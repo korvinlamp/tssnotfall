@@ -1,360 +1,360 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sanitäter & Erste Hilfe</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-      text-align: center;
-      padding: 30px;
-      font-size: 20px;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sanitäter & Erste Hilfe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 30px;
+            font-size: 20px;
+        }
 
-    .hidden {
-      display: none;
-    }
+        .hidden { display: none; }
 
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      margin: auto;
-      max-width: 600px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: auto;
+            max-width: 500px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
 
-    h2 {
-      color: #dc3545;
-      font-size: 26px;
-      margin-bottom: 20px;
-    }
+        h2 {
+            color: #dc3545;
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
 
-    input,
-    button {
-      font-size: 20px;
-      padding: 14px;
-      margin: 12px auto;
-      width: 90%;
-      max-width: 350px;
-    }
+        input, button {
+            font-size: 20px;
+            padding: 14px;
+            margin: 12px auto;
+            width: 90%;
+            max-width: 350px;
+        }
 
-    button {
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+        button {
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
 
-    .btn-red {
-      background-color: #dc3545;
-      color: white;
-    }
+        .btn-red {
+            background-color: #dc3545;
+            color: white;
+        }
 
-    .btn-red:hover {
-      background-color: #c82333;
-    }
+        .btn-red:hover {
+            background-color: #c82333;
+        }
 
-    .btn-yellow {
-      background-color: #ffc107;
-      color: black;
-    }
+        .btn-gray {
+            background-color: #6c757d;
+            color: white;
+        }
 
-    .btn-yellow:hover {
-      background-color: #e0a800;
-    }
+        #response {
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+            margin-top: 25px;
+        }
 
-    .btn-gray {
-      background-color: #6c757d;
-      color: white;
-    }
+        #warning {
+            font-size: 18px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
 
-    #response {
-      font-size: 24px;
-      font-weight: bold;
-      color: green;
-      margin-top: 25px;
-    }
+        ul {
+            text-align: left;
+            padding-left: 1.2em;
+        }
 
-    #warning {
-      font-size: 18px;
-      color: #6c757d;
-      margin-top: 10px;
-    }
+        li {
+            margin-bottom: 8px;
+        }
 
-    p {
-      font-size: 20px;
-      line-height: 1.5;
-    }
+        #timerDisplay {
+            font-size: 26px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
 
-    ul {
-      text-align: left;
-      display: inline-block;
-      font-size: 20px;
-      padding-left: 0;
-      margin: 20px 0;
-      list-style: none;
-    }
+        .section {
+            margin-top: 25px;
+        }
 
-    ul li::before {
-      content: "🔸 ";
-    }
+        .led {
+            width: 60px;
+            height: 60px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background-color: #dc3545;
+            opacity: 0;
+        }
 
-    .section {
-      margin-top: 25px;
-    }
+        .blink {
+            animation: blink 0.545s infinite;
+            opacity: 1; /* LED sichtbar machen */
+        }
 
-    .led {
-      width: 100%;
-      max-width: 300px;
-      height: 80px;
-      margin: 20px auto;
-      border-radius: 20px;
-      background-color: gray;
-      transition: background-color 0.05s ease-in-out;
-    }
-
-    .led.active {
-      background-color: red;
-    }
-
-    #timerDisplay {
-      font-size: 28px;
-      margin-top: 20px;
-    }
-
-    .blink {
-      color: red;
-      font-weight: bold;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-  </style>
+        @keyframes blink {
+            0%   { opacity: 1; }
+            50%  { opacity: 0.2; }
+            100% { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
-  <div id="alarm-section" class="container">
+
+<div id="alarm-section" class="container">
     <h2>🚨 Sanitäter Alarmieren</h2>
     <form id="alarmForm">
-      <label for="raum">Raum:</label><br />
-      <input type="text" id="raum" placeholder="z. B. N01" required /><br />
-      <button type="submit" class="btn-red">🚨 Alarm senden</button>
+        <label for="raum">📍 Raum:</label><br>
+        <input type="text" id="raum" placeholder="z. B. N01" required><br>
+        <button type="submit" class="btn-red">🚨 Alarm senden</button>
     </form>
     <p id="response"></p>
     <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
     <div class="section hidden" id="hilfeStartBtn">
-      <button class="btn-yellow" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe Anleitung</button>
+        <button class="btn-red" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe starten</button>
     </div>
-  </div>
+</div>
 
-  <div id="anleitung-section" class="container hidden">
+<div id="anleitung-section" class="container hidden">
     <div id="anleitung-content"></div>
-    <div id="led" class="led hidden"></div>
-  </div>
+    <div id="metronome-visual" class="led hidden"></div>
+</div>
 
-  <script>
-    const steps = {
-      eigenschutz: {
-        title: "👷‍♂️ Eigenschutz geht vor!",
-        points: ["Eigenes Umfeld prüfen", "Gefahr für dich ausschließen", "Erst dann helfen!"],
-        next: "reaktion"
-      },
-      reaktion: {
-        title: "🤔 Reagiert die Person?",
-        points: ["Ansprechen & sanft anfassen"],
-        nextOptions: [
-          { label: "✅ Ja", next: "ersthilfe" },
-          { label: "❌ Nein", next: "atmung-vorbereitung" }
-        ]
-      },
-      ersthilfe: {
-        title: "🟢 Person reagiert",
-        points: [
-          "Lebensbedrohliche Verletzungen versorgen",
-          "112 anrufen (falls nötig)",
-          "Wärmen & betreuen"
-        ]
-      },
-      "atmung-vorbereitung": {
-        title: "👃 Atmung prüfen (10 Sek.)",
-        points: [
-          "Person liegt auf Rücken",
-          "Kopf überstrecken",
-          "Oberkörper frei machen"
-        ],
-        nextOptions: [
-          { label: "✅ Atmet", next: "seitenlage" },
-          { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
-        ]
-      },
-      seitenlage: {
-        title: "🛏️ Stabile Seitenlage",
-        points: [
-          "Person liegt seitlich",
-          "Kopf überstreckt",
-          "Mundwinkel tiefster Punkt"
-        ],
-        next: "seitenlage-notruf"
-      },
-      "seitenlage-notruf": {
-        title: "📞 Notruf 112 & AED holen",
-        points: [
-          "Andere Personen um Hilfe bitten",
-          "Bei der Person bleiben"
-        ],
-        next: "atmung-wiederholen"
-      },
-      "atmung-wiederholen": {
-        title: "⏳ Atmung regelmäßig prüfen",
-        points: ["Alle 2:30 Minuten prüfen!"],
-        timer: 150,
-        nextOptions: [{ label: "Atmung jetzt prüfen", next: "atmung-vorbereitung" }]
-      },
-      "keinatmung-notruf": {
-        title: "📞 Notruf 112 & AED holen",
-        points: [
-          "Sofort Hilfe holen lassen",
-          "Dann mit Reanimation beginnen"
-        ],
-        next: "reanimation"
-      },
-      reanimation: {
-        title: "❤️ Wiederbelebung starten",
-        points: [
-          "30x Brustkorb kräftig drücken",
-          "2x beatmen: Kopf überstrecken, Nase zuhalten",
-          "Im Wechsel: 30:2 – bis Hilfe kommt"
-        ],
-        showMetronome: true
-      }
-    };
-
+<script>
     let historyStack = [];
     let metronomeInterval = null;
     let timerInterval = null;
-    let timerTimeout = null;
 
-    const led = document.getElementById("led");
+    let audioContext = null;
+
+    const steps = {
+        eigenschutz: {
+            title: "🛡️ Eigenschutz geht vor!",
+            text: [
+                "⚠️ Umgebung sichern",
+                "🧤 Schutzhandschuhe tragen",
+                "📞 Hilfe anfordern"
+            ],
+            next: "reaktion"
+        },
+        reaktion: {
+            title: "🤔 Reagiert die Person?",
+            text: [
+                "Ansprechen + sanftes Rütteln",
+                "Reaktion vorhanden?"
+            ],
+            nextOptions: [
+                { label: "✅ Ja", next: "ersthilfe" },
+                { label: "❌ Nein", next: "atmung-vorbereitung" }
+            ]
+        },
+        ersthilfe: {
+            title: "🟢 Person reagiert",
+            text: [
+                "🩹 Wunden versorgen",
+                "📞 Notruf 112 ggf. absetzen",
+                "🧣 Person warm halten",
+                "🧍 Betreuung bis Rettung eintrifft"
+            ],
+            next: null
+        },
+        "atmung-vorbereitung": {
+            title: "💨 Atmung prüfen (10 Sek.)",
+            text: [
+                "🛏️ Person auf Rücken, Oberkörper frei",
+                "🤲 Kopf überstrecken",
+                "👂 Hören / Sehen / Fühlen"
+            ],
+            nextOptions: [
+                { label: "✅ Atmet", next: "seitenlage" },
+                { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
+            ]
+        },
+        seitenlage: {
+            title: "↩️ Stabile Seitenlage",
+            text: [
+                "🧍 Person liegt auf der Seite",
+                "😮 Mund nach unten",
+                "💆 Kopf überstreckt"
+            ],
+            next: "seitenlage-notruf"
+        },
+        "seitenlage-notruf": {
+            title: "📞 Notruf & AED",
+            text: [
+                "Andere Personen anweisen",
+                "Immer bei der Person bleiben"
+            ],
+            next: "atmung-wiederholen"
+        },
+        "atmung-wiederholen": {
+            title: "🔁 Atmung alle 2:30 prüfen",
+            text: [
+                "⏳ Timer läuft automatisch"
+            ],
+            nextOptions: [
+                { label: "✅ Atmung prüfen", next: "atmung-vorbereitung" }
+            ]
+        },
+        "keinatmung-notruf": {
+            title: "📞 Kein Atmen → Notruf & AED",
+            text: [
+                "Andere anweisen, Hilfe zu holen",
+                "Bleibe bei der Person"
+            ],
+            next: "reanimation"
+        },
+        reanimation: {
+            title: "❤️ Wiederbelebung starten",
+            text: [
+                "📍 Druckpunkt: Brustmitte",
+                "🔁 30x drücken, 2x beatmen",
+                "Tempo: 100–120 / Min",
+                "🕒 Takt starten für Hilfe"
+            ],
+            next: null
+        }
+    };
 
     function showSection() {
-      document.getElementById("alarm-section").classList.add("hidden");
-      document.getElementById("anleitung-section").classList.remove("hidden");
+        document.getElementById("alarm-section").classList.add("hidden");
+        document.getElementById("anleitung-section").classList.remove("hidden");
     }
 
-    function showAnleitung(key) {
-      showSection();
-      const step = steps[key];
-      if (!step) return;
+    function showAnleitung(stepKey) {
+        showSection();
+        const step = steps[stepKey];
+        if (!step) return;
 
-      clearTimers();
+        clearTimers();
 
-      if (historyStack[historyStack.length - 1] !== key) {
-        historyStack.push(key);
-      }
+        if (historyStack[historyStack.length - 1] !== stepKey) {
+            historyStack.push(stepKey);
+        }
 
-      let html = `<h2>${step.title}</h2>`;
-      if (step.points) {
-        html += "<ul>";
-        step.points.forEach(p => html += `<li>${p}</li>`);
-        html += "</ul>";
-      }
-
-      if (step.timer) {
-        html += `<p id="timerDisplay">⏳ 2:30</p>`;
-        startCountdown("timerDisplay", step.timer);
-      }
-
-      if (step.showMetronome) {
-        html += `<button class="btn-yellow" onclick="toggleMetronome(this)">🕒 Takt starten</button>`;
-        led.classList.remove("hidden");
-      } else {
-        led.classList.add("hidden");
-      }
-
-      if (step.next) {
-        html += `<button class="btn-yellow" onclick="showAnleitung('${step.next}')">Weiter</button>`;
-      } else if (step.nextOptions) {
-        step.nextOptions.forEach(opt => {
-          html += `<button class="btn-yellow" onclick="showAnleitung('${opt.next}')">${opt.label}</button>`;
+        let html = `<h2>${step.title}</h2><ul>`;
+        (step.text || []).forEach(item => {
+            html += `<li>${item}</li>`;
         });
-      }
+        html += `</ul>`;
 
-      if (historyStack.length > 1) {
-        html += `<br><button class="btn-gray" onclick="goBack()">↩️ Zurück</button>`;
-      }
+        if (stepKey === "reanimation") {
+            html += `<button class="btn-red" onclick="toggleMetronome(this)">🕒 Takt starten</button>`;
+            document.getElementById("metronome-visual").classList.remove("hidden");
+        } else {
+            document.getElementById("metronome-visual").classList.add("hidden");
+        }
 
-      document.getElementById("anleitung-content").innerHTML = html;
+        if (stepKey === "atmung-wiederholen") {
+            html += `<p id="timerDisplay">⏳ 2:30</p>`;
+            startCountdown("timerDisplay", 150);
+        }
+
+        if (step.next) {
+            html += `<button class="btn-red" onclick="showAnleitung('${step.next}')">Weiter</button>`;
+        } else if (step.nextOptions) {
+            step.nextOptions.forEach(opt => {
+                html += `<button class="btn-red" onclick="showAnleitung('${opt.next}')">${opt.label}</button><br>`;
+            });
+        }
+
+        if (historyStack.length > 1) {
+            html += `<br><button class="btn-gray" onclick="goBack()">↩️ Zurück</button>`;
+        }
+
+        document.getElementById("anleitung-content").innerHTML = html;
     }
 
     function goBack() {
-      if (historyStack.length > 1) {
-        historyStack.pop();
-        const previous = historyStack.pop();
-        showAnleitung(previous);
-      }
+        if (historyStack.length > 1) {
+            historyStack.pop(); // Aktuellen Schritt entfernen
+            const previous = historyStack.pop();
+            showAnleitung(previous);
+        }
     }
 
-    function startCountdown(id, seconds) {
-      let time = seconds;
-      const display = document.getElementById(id);
+    function toggleMetronome(button) {
+        const visual = document.getElementById("metronome-visual");
 
-      display.textContent = `⏳ 2:30`;
+        if (metronomeInterval) {
+            clearInterval(metronomeInterval);
+            metronomeInterval = null;
+            button.textContent = "🕒 Takt starten";
+            visual.classList.remove("blink");
+        } else {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
 
-      timerInterval = setInterval(() => {
-        time--;
-        const m = Math.floor(time / 60);
-        const s = time % 60;
-        display.textContent = `⏳ ${m}:${s.toString().padStart(2, '0')}`;
-      }, 1000);
+            const click = () => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = "square";
+                osc.frequency.setValueAtTime(1000, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                osc.connect(gain).connect(audioContext.destination);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.05);
+            };
 
-      timerTimeout = setTimeout(() => {
-        clearInterval(timerInterval);
-        display.innerHTML = `<span class="blink">‼️ Atmung jetzt erneut prüfen!</span>`;
-      }, seconds * 1000);
+            click(); // Sofortiger Start
+            visual.classList.add("blink");
+            metronomeInterval = setInterval(click, 545);
+            button.textContent = "⏹️ Takt stoppen";
+        }
     }
 
-    function toggleMetronome(btn) {
-      if (metronomeInterval) {
-        clearInterval(metronomeInterval);
-        metronomeInterval = null;
-        led.classList.remove("active");
-        btn.textContent = "🕒 Takt starten";
-        return;
-      }
+    function startCountdown(displayId, durationSeconds) {
+        let remaining = durationSeconds;
+        const display = document.getElementById(displayId);
 
-      btn.textContent = "⏹️ Takt stoppen";
-      metronomeInterval = setInterval(() => {
-        led.classList.add("active");
-        setTimeout(() => {
-          led.classList.remove("active");
-        }, 100);
-      }, 545);
+        timerInterval = setInterval(() => {
+            if (remaining >= 0) {
+                const minutes = Math.floor(remaining / 60);
+                const seconds = String(remaining % 60).padStart(2, '0');
+                display.textContent = `⏳ ${minutes}:${seconds}`;
+            }
+
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                display.innerHTML = `<span style="color:red; animation: blink 1s infinite;">‼️ Atmung jetzt erneut prüfen!</span>`;
+            }
+
+            remaining--;
+        }, 1000);
     }
 
     function clearTimers() {
-      if (timerInterval) clearInterval(timerInterval);
-      if (timerTimeout) clearTimeout(timerTimeout);
-      if (metronomeInterval) clearInterval(metronomeInterval);
-      metronomeInterval = null;
-      led.classList.remove("active");
+        if (timerInterval) clearInterval(timerInterval);
+        if (metronomeInterval) clearInterval(metronomeInterval);
+        document.getElementById("metronome-visual").classList.remove("blink");
+        metronomeInterval = null;
     }
 
-    document.getElementById("alarmForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const raum = document.getElementById("raum").value;
-      const url = "https://maker.ifttt.com/trigger/sanitaeter-alarm/with/key/cCSCnLcOR4Lqjv_YDsEOYr?value1=" + encodeURIComponent(raum);
-      fetch(url).finally(() => {
-        document.getElementById("alarmForm").style.display = "none";
-        document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
-        document.getElementById("warning").classList.remove("hidden");
-        document.getElementById("hilfeStartBtn").classList.remove("hidden");
-      });
+    document.getElementById("alarmForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const raum = document.getElementById("raum").value;
+        const url = "https://maker.ifttt.com/trigger/sanitaeter-alarm/with/key/cCSCnLcOR4Lqjv_YDsEOYr?value1=" + encodeURIComponent(raum);
+        fetch(url).finally(() => {
+            document.getElementById("alarmForm").style.display = "none";
+            document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
+            document.getElementById("warning").classList.remove("hidden");
+            document.getElementById("hilfeStartBtn").classList.remove("hidden");
+        });
     });
-  </script>
+</script>
+
 </body>
 </html>
