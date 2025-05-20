@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sanitäter & Erste Hilfe</title>
     <style>
         body {
@@ -71,31 +71,47 @@
             margin-top: 10px;
         }
 
-        p {
-            font-size: 20px;
-            line-height: 1.5;
+        ul {
+            text-align: left;
+            padding-left: 1.2em;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        #timerDisplay {
+            font-size: 26px;
+            font-weight: bold;
+            margin-top: 20px;
         }
 
         .section {
             margin-top: 25px;
         }
 
-        .anleitung-box {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: left;
+        .led {
+            width: 60px;
+            height: 60px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background-color: #dc3545;
+            opacity: 0;
         }
 
-        .step-buttons button {
-            margin-top: 10px;
+        .blink {
+            animation: pulse 0.545s infinite;
         }
 
         @keyframes blink {
             0%   { opacity: 1; }
             50%  { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.2; }
             100% { opacity: 1; }
         }
     </style>
@@ -105,8 +121,8 @@
 <div id="alarm-section" class="container">
     <h2>🚨 Sanitäter Alarmieren</h2>
     <form id="alarmForm">
-        <label for="raum">Raum:</label><br>
-        <input type="text" id="raum" placeholder="z. B. N01" required><br>
+        <label for="raum">📍 Raum:</label><br>
+        <input type="text" id="raum" placeholder="z. B. N01" required><br>
         <button type="submit" class="btn-red">🚨 Alarm senden</button>
     </form>
     <p id="response"></p>
@@ -118,120 +134,101 @@
 
 <div id="anleitung-section" class="container hidden">
     <div id="anleitung-content"></div>
+    <div id="metronome-visual" class="led hidden"></div>
 </div>
 
 <script>
     let historyStack = [];
     let metronomeInterval = null;
     let timerInterval = null;
-    let timerTimeout = null;
+
+    let audioContext = null;
 
     const steps = {
         eigenschutz: {
-            title: "⛑️ Eigenschutz geht vor!",
-            text: `
-                <div class="anleitung-box">
-                    • Achte auf Umgebung <br>
-                    • Eigene Sicherheit zuerst <br>
-                    • Keine Gefahr eingehen!
-                </div>
-            `,
+            title: "🛡️ Eigenschutz geht vor!",
+            text: [
+                "⚠️ Umgebung sichern",
+                "🧤 Schutzhandschuhe tragen",
+                "📞 Hilfe anfordern"
+            ],
             next: "reaktion"
         },
         reaktion: {
-            title: "👂 Reagiert die Person?",
-            text: `
-                <div class="anleitung-box">
-                    • Ansprechen und vorsichtig anfassen <br>
-                    • Beobachte Reaktion (Bewegung, Laut, Blickkontakt)
-                </div>
-            `,
+            title: "🤔 Reagiert die Person?",
+            text: [
+                "Ansprechen + sanftes Rütteln",
+                "Reaktion vorhanden?"
+            ],
             nextOptions: [
                 { label: "✅ Ja", next: "ersthilfe" },
                 { label: "❌ Nein", next: "atmung-vorbereitung" }
             ]
         },
         ersthilfe: {
-            title: "✅ Erste Hilfe leisten",
-            text: `
-                <div class="anleitung-box">
-                    • Verletzungen versorgen<br>
-                    • Notruf 112 absetzen<br>
-                    • Person warm halten<br>
-                    • Beruhigen & begleiten
-                </div>
-            `,
+            title: "🟢 Person reagiert",
+            text: [
+                "🩹 Wunden versorgen",
+                "📞 Notruf 112 ggf. absetzen",
+                "🧣 Person warm halten",
+                "🧍 Betreuung bis Rettung eintrifft"
+            ],
             next: null
         },
         "atmung-vorbereitung": {
             title: "💨 Atmung prüfen (10 Sek.)",
-            text: `
-                <div class="anleitung-box">
-                    • Person auf den Rücken<br>
-                    • Kleidung am Oberkörper entfernen<br>
-                    • Kopf überstrecken
-                </div>
-            `,
+            text: [
+                "🛏️ Person auf Rücken, Oberkörper frei",
+                "🤲 Kopf überstrecken",
+                "👂 Hören / Sehen / Fühlen"
+            ],
             nextOptions: [
                 { label: "✅ Atmet", next: "seitenlage" },
                 { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
             ]
         },
         seitenlage: {
-            title: "🛌 Stabile Seitenlage",
-            text: `
-                <div class="anleitung-box">
-                    • Person auf die Seite legen<br>
-                    • Kopf überstreckt<br>
-                    • Mund nach unten (tiefster Punkt)
-                </div>
-            `,
+            title: "↩️ Stabile Seitenlage",
+            text: [
+                "🧍 Person liegt auf der Seite",
+                "😮 Mund nach unten",
+                "💆 Kopf überstreckt"
+            ],
             next: "seitenlage-notruf"
         },
         "seitenlage-notruf": {
-            title: "📞 Notruf & AED holen",
-            text: `
-                <div class="anleitung-box">
-                    • Andere um Hilfe bitten<br>
-                    • Bei der Person bleiben
-                </div>
-            `,
+            title: "📞 Notruf & AED",
+            text: [
+                "Andere Personen anweisen",
+                "Immer bei der Person bleiben"
+            ],
             next: "atmung-wiederholen"
         },
         "atmung-wiederholen": {
-            title: "⏱️ Atmung regelmäßig prüfen",
-            text: `
-                <div class="anleitung-box">
-                    • Alle 2:30 Minuten<br>
-                    • Timer läuft automatisch
-                </div>
-                <p id="timerDisplay">⏳ 2:30</p>
-            `,
+            title: "🔁 Atmung alle 2:30 prüfen",
+            text: [
+                "⏳ Timer läuft automatisch"
+            ],
             nextOptions: [
-                { label: "🔁 Jetzt Atmung prüfen", next: "atmung-vorbereitung" }
+                { label: "✅ Atmung prüfen", next: "atmung-vorbereitung" }
             ]
         },
         "keinatmung-notruf": {
-            title: "📞 Notruf & AED holen",
-            text: `
-                <div class="anleitung-box">
-                    • Andere anweisen<br>
-                    • Nicht alleine lassen!
-                </div>
-            `,
+            title: "📞 Kein Atmen → Notruf & AED",
+            text: [
+                "Andere anweisen, Hilfe zu holen",
+                "Bleibe bei der Person"
+            ],
             next: "reanimation"
         },
         reanimation: {
-            title: "❤️ Wiederbelebung starten!",
-            text: `
-                <div class="anleitung-box">
-                    • 30x Brustkorb kräftig drücken (5 cm tief)<br>
-                    • 2x beatmen (Kopf überstrecken, Nase zu)<br>
-                    • Tempo: 100–120/min<br>
-                    • Fortsetzen bis Rettung kommt
-                </div>
-                <button class="btn-red" onclick="toggleMetronome(this)">🕒 Takt starten</button>
-            `,
+            title: "❤️ Wiederbelebung starten",
+            text: [
+                "📍 Druckpunkt: Brustmitte",
+                "🔁 30x drücken, 2x beatmen",
+                "Tempo: 100–120 / Min",
+                "🕒 Takt starten für Hilfe"
+            ],
             next: null
         }
     };
@@ -252,18 +249,30 @@
             historyStack.push(stepKey);
         }
 
-        let html = `<h2>${step.title}</h2>${step.text}`;
+        let html = `<h2>${step.title}</h2><ul>`;
+        (step.text || []).forEach(item => {
+            html += `<li>${item}</li>`;
+        });
+        html += `</ul>`;
 
-        if (step.next) {
-            html += `<div class="step-buttons"><button class="btn-red" onclick="showAnleitung('${step.next}')">Weiter</button></div>`;
-        } else if (step.nextOptions) {
-            step.nextOptions.forEach(opt => {
-                html += `<div class="step-buttons"><button class="btn-red" onclick="showAnleitung('${opt.next}')">${opt.label}</button></div>`;
-            });
+        if (stepKey === "reanimation") {
+            html += `<button class="btn-red" onclick="toggleMetronome(this)">🕒 Takt starten</button>`;
+            document.getElementById("metronome-visual").classList.remove("hidden");
+        } else {
+            document.getElementById("metronome-visual").classList.add("hidden");
         }
 
         if (stepKey === "atmung-wiederholen") {
+            html += `<p id="timerDisplay">⏳ 2:30</p>`;
             startCountdown("timerDisplay", 150);
+        }
+
+        if (step.next) {
+            html += `<button class="btn-red" onclick="showAnleitung('${step.next}')">Weiter</button>`;
+        } else if (step.nextOptions) {
+            step.nextOptions.forEach(opt => {
+                html += `<button class="btn-red" onclick="showAnleitung('${opt.next}')">${opt.label}</button><br>`;
+            });
         }
 
         if (historyStack.length > 1) {
@@ -275,30 +284,38 @@
 
     function goBack() {
         if (historyStack.length > 1) {
-            historyStack.pop();
+            historyStack.pop(); // Aktuellen Schritt entfernen
             const previous = historyStack.pop();
             showAnleitung(previous);
         }
     }
 
     function toggleMetronome(button) {
+        const visual = document.getElementById("metronome-visual");
+
         if (metronomeInterval) {
             clearInterval(metronomeInterval);
             metronomeInterval = null;
             button.textContent = "🕒 Takt starten";
+            visual.classList.remove("blink");
         } else {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
             const click = () => {
-                const o = context.createOscillator();
-                const g = context.createGain();
-                o.type = 'square';
-                o.frequency.setValueAtTime(1000, context.currentTime);
-                g.gain.setValueAtTime(0.2, context.currentTime);
-                o.connect(g).connect(context.destination);
-                o.start();
-                o.stop(context.currentTime + 0.05);
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = "square";
+                osc.frequency.setValueAtTime(1000, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                osc.connect(gain).connect(audioContext.destination);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.05);
             };
-            click();
+
+            click(); // Sofortiger Start
+            visual.classList.add("blink");
             metronomeInterval = setInterval(click, 545);
             button.textContent = "⏹️ Takt stoppen";
         }
@@ -307,24 +324,27 @@
     function startCountdown(displayId, durationSeconds) {
         let remaining = durationSeconds;
         const display = document.getElementById(displayId);
-        timerInterval = setInterval(() => {
-            const minutes = String(Math.floor(remaining / 60)).padStart(1, '0');
-            const seconds = String(remaining % 60).padStart(2, '0');
-            display.textContent = `⏳ ${minutes}:${seconds}`;
-            if (--remaining < 0) {
-                clearInterval(timerInterval);
-            }
-        }, 1000);
 
-        timerTimeout = setTimeout(() => {
-            display.innerHTML = `<span style="color:red; animation: blink 1s infinite;">‼️ Atmung jetzt überprüfen!</span>`;
-        }, durationSeconds * 1000);
+        timerInterval = setInterval(() => {
+            if (remaining >= 0) {
+                const minutes = Math.floor(remaining / 60);
+                const seconds = String(remaining % 60).padStart(2, '0');
+                display.textContent = `⏳ ${minutes}:${seconds}`;
+            }
+
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                display.innerHTML = `<span style="color:red; animation: blink 1s infinite;">‼️ Atmung jetzt erneut prüfen!</span>`;
+            }
+
+            remaining--;
+        }, 1000);
     }
 
     function clearTimers() {
         if (timerInterval) clearInterval(timerInterval);
-        if (timerTimeout) clearTimeout(timerTimeout);
         if (metronomeInterval) clearInterval(metronomeInterval);
+        document.getElementById("metronome-visual").classList.remove("blink");
         metronomeInterval = null;
     }
 
