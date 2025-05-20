@@ -102,7 +102,7 @@
   <p id="response"></p>
   <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
   <div class="section hidden" id="hilfeStartBtn">
-    <button class="btn-red" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe starten</button>
+    <button class="btn-red" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe Anleitung</button>
   </div>
 </div>
 
@@ -120,72 +120,67 @@
   const steps = {
     eigenschutz: {
       title: "⛑️ Eigenschutz geht vor!",
-      text: `
-        <div class="anleitung-box">
-          • Achte auf Umgebung <br>
-          • Eigene Sicherheit zuerst <br>
-          • Keine Gefahr eingehen!
-        </div>
-      `,
+      text: ` `,
       next: "reaktion"
     },
     reaktion: {
-      title: "👂 Reagiert die Person?",
-      text: `
-        <div class="anleitung-box">
-          • Ansprechen und vorsichtig anfassen <br>
-          • Beobachte Reaktion (Bewegung, Laut, Blickkontakt)
-        </div>
-      `,
+      title: "👂 Reagiert die Person auf Ansprechen oder Anfassen?",
+      text: ` `,
       nextOptions: [
-        { label: "✅ Ja", next: "ersthilfe" },
-        { label: "❌ Nein", next: "atmung-vorbereitung" }
+        { label: "✅ Ja, sie reagiert", next: "ersthilfe" },
+        { label: "❌ Nein, sie reagiert nicht", next: "atmung-vorbereitung" }
       ]
     },
     ersthilfe: {
-      title: "✅ Erste Hilfe leisten",
+      title: "✅ Erste Hilfe nach Notwendigkeit",
       text: `
         <div class="anleitung-box">
-          • Verletzungen versorgen<br>
-          • Notruf 112 absetzen<br>
-          • Person warm halten<br>
-          • Beruhigen & begleiten
+          • Lebensbedrohliche Verletzungen versorgen<br>
+          • Notruf 112 nötig?<br>
+          • Person wärmen<br>
+          • Person betreuen bis Sanitäter eintreffen
         </div>
       `,
       next: null
     },
     "atmung-vorbereitung": {
-      title: "💨 Atmung prüfen (10 Sek.)",
+      title: "Prüfe die Atmung für 10 Sekunden!",
       text: `
         <div class="anleitung-box">
-          • Person auf den Rücken<br>
-          • Kleidung am Oberkörper entfernen<br>
-          • Kopf überstrecken
+          • Person liegt auf Rücken<br>
+          • Oberkörper ist entkleidet<br>
+          • Kopf ist überstreckt
         </div>
       `,
       nextOptions: [
-        { label: "✅ Atmet", next: "seitenlage" },
+        { label: "✅ Atmung vorhanden", next: "seitenlage" },
         { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
       ]
     },
     seitenlage: {
-      title: "🛌 Stabile Seitenlage",
+      title: "Stabile Seitenlage",
       text: `
         <div class="anleitung-box">
-          • Person auf die Seite legen<br>
-          • Kopf überstreckt<br>
-          • Mund nach unten (tiefster Punkt)
+          • Person liegt auf der Seite<br>
+          • Kopf ist überstreckt<br>
+          • Mundwinkel ist der tiefste Punkt
+        </div>
+      `,
+      next: "atmung-notruf"
+        },
+      "atmung-notruf": {
+      title: "📞 Notruf 112 & AED holen lassen",
+      text: `
+        <div class="anleitung-box">
+          • Andere anweisen<br>
+          • Person nicht alleine lassen!
         </div>
       `,
       next: "seitenlage-timer"
     },
     "seitenlage-timer": {
-      title: "⏱️ 2:30 Minuten Timer & Atmung prüfen",
+      title: "Nach 2 min 30 die Atmung erneut prüfen!",
       text: `
-        <div class="anleitung-box">
-          • Andere um Hilfe bitten<br>
-          • Bei der Person bleiben
-        </div>
         <p id="timerDisplay">⏳ 2:30</p>
       `,
       nextOptions: [
@@ -193,23 +188,23 @@
       ]
     },
     "keinatmung-notruf": {
-      title: "📞 Notruf & AED holen",
+      title: "📞 Notruf 112 & AED holen lassen",
       text: `
         <div class="anleitung-box">
           • Andere anweisen<br>
-          • Nicht alleine lassen!
+          • Person nicht alleine lassen!
         </div>
       `,
       next: "reanimation"
     },
     reanimation: {
-      title: "❤️ Wiederbelebung starten!",
+      title: "Wiederbelebung starten!",
       text: `
         <div class="anleitung-box">
-          • 30x Brustkorb kräftig drücken (5 cm tief)<br>
-          • 2x beatmen (Kopf überstrecken, Nase zu)<br>
+          • 30x Brustkorb kräftig eindrücken (5 cm tief)<br>
+          • 2x beatmen (Kopf überstrecken, Nase zuhalten)<br>
           • Tempo: 100–120/min<br>
-          • Fortsetzen bis Rettung kommt
+          • 30:2 bis Sanitäter eintreffen
         </div>
         <button class="btn-red" onclick="toggleMetronome(this)">🕒 Takt starten</button>
       `,
