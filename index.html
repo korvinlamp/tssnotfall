@@ -100,13 +100,18 @@
         }
 
         .blink {
-            animation: blink 0.545s infinite;
-            opacity: 1; /* LED sichtbar machen */
+            animation: pulse 0.545s infinite;
         }
 
         @keyframes blink {
             0%   { opacity: 1; }
-            50%  { opacity: 0.2; }
+            50%  { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.2; }
             100% { opacity: 1; }
         }
     </style>
@@ -253,7 +258,13 @@
         if (stepKey === "reanimation") {
             html += `<button class="btn-red" onclick="toggleMetronome(this)">🕒 Takt starten</button>`;
             document.getElementById("metronome-visual").classList.remove("hidden");
+            // LED direkt sichtbar und mit Puls animieren
+            const led = document.getElementById("metronome-visual");
+            led.style.backgroundColor = "#dc3545";
+            led.style.opacity = "1";
         } else {
+            const led = document.getElementById("metronome-visual");
+            led.style.opacity = "0";
             document.getElementById("metronome-visual").classList.add("hidden");
         }
 
@@ -317,30 +328,46 @@
     }
 
     function startCountdown(displayId, durationSeconds) {
+        clearTimer();
+
         let remaining = durationSeconds;
         const display = document.getElementById(displayId);
 
+        updateDisplay(remaining);
+
         timerInterval = setInterval(() => {
-            if (remaining >= 0) {
-                const minutes = Math.floor(remaining / 60);
-                const seconds = String(remaining % 60).padStart(2, '0');
-                display.textContent = `⏳ ${minutes}:${seconds}`;
-            }
-
-            if (remaining <= 0) {
-                clearInterval(timerInterval);
-                display.innerHTML = `<span style="color:red; animation: blink 1s infinite;">‼️ Atmung jetzt erneut prüfen!</span>`;
-            }
-
             remaining--;
+            if (remaining < 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                display.innerHTML = `<span style="color:red; animation: blink 1s infinite;">‼️ Atmung jetzt erneut prüfen!</span>`;
+                return;
+            }
+            updateDisplay(remaining);
         }, 1000);
+
+        function updateDisplay(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = String(seconds % 60).padStart(2, '0');
+            display.textContent = `⏳ ${min}:${sec}`;
+        }
+    }
+
+    function clearTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
     }
 
     function clearTimers() {
-        if (timerInterval) clearInterval(timerInterval);
-        if (metronomeInterval) clearInterval(metronomeInterval);
-        document.getElementById("metronome-visual").classList.remove("blink");
-        metronomeInterval = null;
+        clearTimer();
+        if (metronomeInterval) {
+            clearInterval(metronomeInterval);
+            metronomeInterval = null;
+            const visual = document.getElementById("metronome-visual");
+            visual.classList.remove("blink");
+        }
     }
 
     document.getElementById("alarmForm").addEventListener("submit", function (event) {
