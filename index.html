@@ -142,12 +142,12 @@
         },
         ersthilfe: {
             title: "Person reagiert",
-            text: "• Person beruhigen und betreuen<br>• Vor Unterkühlung schützen<br>• Notruf 112 wählen<br>• Beobachten",
+            text: "• Versorge lebensbedrohliche Verletzungen<br>• ggf. Notruf 112<br>• Person wärmen<br>• Person betreuen bis die Sanitäter eintreffen!",
             next: null
         },
         "atmung-vorbereitung": {
             title: "Prüfe die Atmung für 10 Sekunden!",
-            text: "Person liegt auf dem Rücken & Oberkörper ist entkleidet",
+            text: "Peron liegt mit Rücken auf festem Untergrund <br>Oberkörper ist entkleidet <br>Kopf ist überstreckt",
             nextOptions: [
                 { label: "✅ Ja, sie atmet", next: "seitenlage" },
                 { label: "❌ Nein, sie atmet nicht", next: "keinatmung-notruf" }
@@ -155,27 +155,29 @@
         },
         seitenlage: {
             title: "Lege die Person in die Stabile Seitenlage!",
-            text: "Person liegt auf der Seite, Kopf ist überstreckt und Mundwinkel ist der tiefste Punkt.",
+            text: "Person liegt auf der Seite <br>Kopf ist überstreckt <br>Mundwinkel ist der tiefste Punkt",
             next: "seitenlage-notruf"
         },
         "seitenlage-notruf": {
             title: "Notruf 112 & AED holen lassen",
-            text: "(Lass jemanden) Notruf 112 wählen und LASS einen Defibrillator (AED) holen. Bleibe bei der Person!",
+            text: "Wenn möglich, weise andere Leute dazu an. Bleibe bei der Person!",
             next: "atmung-wiederholen"
         },
         "atmung-wiederholen": {
             title: "Prüfe die Atmung alle 2 Minuten 30!",
             text: "Ein Timer startet automatisch.",
-            next: "atmung-vorbereitung"
+            nextOptions: [
+    { label: "Atmung prüfen", next: "atmung-vorbereitung" }
+]
         },
         "keinatmung-notruf": {
             title: "Notruf 112 & AED holen lassen",
-            text: "(Lass jemanden) Notruf 112 wählen und LASS einen Defibrillator (AED) holen. Bleibe bei der Person!",
+            text: "Wenn möglich, weise andere Leute dazu an. Bleibe bei der Person!",
             next: "reanimation"
         },
         reanimation: {
             title: "Beginne mit der Wiederbelebung!",
-            text: "• Druckpunkt: Mittig zwischen den Brustwarzen<br>• Tiefe: 5 cm, Tempo: 100–120/min<br><br>• 30x tief drücken + vollständig entlasten<br>• 2x Beatmen: Kopf überstrecken, Mund öffnen, Nase zuhalten, in den Mund beatmen<br>• 30 : 2 im Wechsel, bis der Rettungsdienst eintrifft!",
+            text: "• Druckpunkt: Mittig zwischen den Brustwarzen<br>• Tiefe: 5 cm, Tempo: 100–120/min<br><br>• 30x tief drücken + vollständig entlasten<br>• 2x Beatmen: Kopf überstrecken,  Nase zuhalten<br>• 30 : 2 im Wechsel, bis der Rettungsdienst eintrifft!",
             next: null
         }
     };
