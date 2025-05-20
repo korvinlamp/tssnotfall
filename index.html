@@ -53,15 +53,6 @@
             background-color: #c82333;
         }
 
-        .btn-blue {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn-blue:hover {
-            background-color: #0056b3;
-        }
-
         .btn-gray {
             background-color: #6c757d;
             color: white;
@@ -89,6 +80,19 @@
             margin-top: 25px;
         }
 
+        .anleitung-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .step-buttons button {
+            margin-top: 10px;
+        }
+
         @keyframes blink {
             0%   { opacity: 1; }
             50%  { opacity: 0; }
@@ -98,26 +102,22 @@
 </head>
 <body>
 
-<!-- ALARM -->
 <div id="alarm-section" class="container">
     <h2>🚨 Sanitäter Alarmieren</h2>
     <form id="alarmForm">
         <label for="raum">Raum:</label><br>
-        <input type="text" id="raum" placeholder="z. B. N01" required><br>
+        <input type="text" id="raum" placeholder="z. B. N01" required><br>
         <button type="submit" class="btn-red">🚨 Alarm senden</button>
     </form>
     <p id="response"></p>
     <p id="warning" class="hidden">Dies ersetzt nicht den Notruf 112!</p>
     <div class="section hidden" id="hilfeStartBtn">
-        <button class="btn-blue" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe Anleitung</button>
+        <button class="btn-red" onclick="showAnleitung('eigenschutz')">⛑️ Erste Hilfe starten</button>
     </div>
 </div>
 
-<!-- ANLEITUNG -->
 <div id="anleitung-section" class="container hidden">
-    <div id="anleitung-content">
-        <!-- Inhalte kommen per JS -->
-    </div>
+    <div id="anleitung-content"></div>
 </div>
 
 <script>
@@ -128,56 +128,110 @@
 
     const steps = {
         eigenschutz: {
-            title: "Eigenschutz geht vor!",
-            text: " ",
+            title: "⛑️ Eigenschutz geht vor!",
+            text: `
+                <div class="anleitung-box">
+                    • Achte auf Umgebung <br>
+                    • Eigene Sicherheit zuerst <br>
+                    • Keine Gefahr eingehen!
+                </div>
+            `,
             next: "reaktion"
         },
         reaktion: {
-            title: "Reagiert die Person auf Ansprechen und Anfassen?",
-            text: " ",
+            title: "👂 Reagiert die Person?",
+            text: `
+                <div class="anleitung-box">
+                    • Ansprechen und vorsichtig anfassen <br>
+                    • Beobachte Reaktion (Bewegung, Laut, Blickkontakt)
+                </div>
+            `,
             nextOptions: [
-                { label: "✅ Ja, sie reagiert", next: "ersthilfe" },
-                { label: "❌ Nein, sie regiert nicht", next: "atmung-vorbereitung" }
+                { label: "✅ Ja", next: "ersthilfe" },
+                { label: "❌ Nein", next: "atmung-vorbereitung" }
             ]
         },
         ersthilfe: {
-            title: "Person reagiert",
-            text: "• Versorge lebensbedrohliche Verletzungen<br>• ggf. Notruf 112<br>• Person wärmen<br>• Person betreuen bis die Sanitäter eintreffen!",
+            title: "✅ Erste Hilfe leisten",
+            text: `
+                <div class="anleitung-box">
+                    • Verletzungen versorgen<br>
+                    • Notruf 112 absetzen<br>
+                    • Person warm halten<br>
+                    • Beruhigen & begleiten
+                </div>
+            `,
             next: null
         },
         "atmung-vorbereitung": {
-            title: "Prüfe die Atmung für 10 Sekunden!",
-            text: "Peron liegt mit Rücken auf festem Untergrund <br>Oberkörper ist entkleidet <br>Kopf ist überstreckt",
+            title: "💨 Atmung prüfen (10 Sek.)",
+            text: `
+                <div class="anleitung-box">
+                    • Person auf den Rücken<br>
+                    • Kleidung am Oberkörper entfernen<br>
+                    • Kopf überstrecken
+                </div>
+            `,
             nextOptions: [
-                { label: "✅ Ja, sie atmet", next: "seitenlage" },
-                { label: "❌ Nein, sie atmet nicht", next: "keinatmung-notruf" }
+                { label: "✅ Atmet", next: "seitenlage" },
+                { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
             ]
         },
         seitenlage: {
-            title: "Lege die Person in die Stabile Seitenlage!",
-            text: "Person liegt auf der Seite <br>Kopf ist überstreckt <br>Mundwinkel ist der tiefste Punkt",
+            title: "🛌 Stabile Seitenlage",
+            text: `
+                <div class="anleitung-box">
+                    • Person auf die Seite legen<br>
+                    • Kopf überstreckt<br>
+                    • Mund nach unten (tiefster Punkt)
+                </div>
+            `,
             next: "seitenlage-notruf"
         },
         "seitenlage-notruf": {
-            title: "Notruf 112 & AED holen lassen",
-            text: "Wenn möglich, weise andere Leute dazu an. Bleibe bei der Person!",
+            title: "📞 Notruf & AED holen",
+            text: `
+                <div class="anleitung-box">
+                    • Andere um Hilfe bitten<br>
+                    • Bei der Person bleiben
+                </div>
+            `,
             next: "atmung-wiederholen"
         },
         "atmung-wiederholen": {
-            title: "Prüfe die Atmung alle 2 Minuten 30!",
-            text: "Ein Timer startet automatisch.",
+            title: "⏱️ Atmung regelmäßig prüfen",
+            text: `
+                <div class="anleitung-box">
+                    • Alle 2:30 Minuten<br>
+                    • Timer läuft automatisch
+                </div>
+                <p id="timerDisplay">⏳ 2:30</p>
+            `,
             nextOptions: [
-    { label: "Atmung prüfen", next: "atmung-vorbereitung" }
-]
+                { label: "🔁 Jetzt Atmung prüfen", next: "atmung-vorbereitung" }
+            ]
         },
         "keinatmung-notruf": {
-            title: "Notruf 112 & AED holen lassen",
-            text: "Wenn möglich, weise andere Leute dazu an. Bleibe bei der Person!",
+            title: "📞 Notruf & AED holen",
+            text: `
+                <div class="anleitung-box">
+                    • Andere anweisen<br>
+                    • Nicht alleine lassen!
+                </div>
+            `,
             next: "reanimation"
         },
         reanimation: {
-            title: "Beginne mit der Wiederbelebung!",
-            text: "• Druckpunkt: Mittig zwischen den Brustwarzen<br>• Tiefe: 5 cm, Tempo: 100–120/min<br><br>• 30x tief drücken + vollständig entlasten<br>• 2x Beatmen: Kopf überstrecken,  Nase zuhalten<br>• 30 : 2 im Wechsel, bis der Rettungsdienst eintrifft!",
+            title: "❤️ Wiederbelebung starten!",
+            text: `
+                <div class="anleitung-box">
+                    • 30x Brustkorb kräftig drücken (5 cm tief)<br>
+                    • 2x beatmen (Kopf überstrecken, Nase zu)<br>
+                    • Tempo: 100–120/min<br>
+                    • Fortsetzen bis Rettung kommt
+                </div>
+                <button class="btn-red" onclick="toggleMetronome(this)">🕒 Takt starten</button>
+            `,
             next: null
         }
     };
@@ -198,23 +252,18 @@
             historyStack.push(stepKey);
         }
 
-        let html = `<h2>${step.title}</h2><p>${step.text || "&nbsp;"}</p>`;
+        let html = `<h2>${step.title}</h2>${step.text}`;
 
-        if (stepKey === "reanimation") {
-            html += `<button class="btn-blue" onclick="toggleMetronome(this)">🕒 Takt starten</button><br><br>`;
+        if (step.next) {
+            html += `<div class="step-buttons"><button class="btn-red" onclick="showAnleitung('${step.next}')">Weiter</button></div>`;
+        } else if (step.nextOptions) {
+            step.nextOptions.forEach(opt => {
+                html += `<div class="step-buttons"><button class="btn-red" onclick="showAnleitung('${opt.next}')">${opt.label}</button></div>`;
+            });
         }
 
         if (stepKey === "atmung-wiederholen") {
-            html += `<p id="timerDisplay">⏳ 2:30</p>`;
             startCountdown("timerDisplay", 150);
-        }
-
-        if (step.next) {
-            html += `<button class="btn-blue" onclick="showAnleitung('${step.next}')">Weiter</button>`;
-        } else if (step.nextOptions) {
-            step.nextOptions.forEach(opt => {
-                html += `<button class="btn-blue" onclick="showAnleitung('${opt.next}')">${opt.label}</button><br>`;
-            });
         }
 
         if (historyStack.length > 1) {
@@ -226,7 +275,7 @@
 
     function goBack() {
         if (historyStack.length > 1) {
-            historyStack.pop(); // aktuelle entfernen
+            historyStack.pop();
             const previous = historyStack.pop();
             showAnleitung(previous);
         }
