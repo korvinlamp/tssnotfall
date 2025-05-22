@@ -152,21 +152,21 @@
       next: null
     },
     "atmung-vorbereitung": {
-      title: "Prüfe die Atmung für 10 Sekunden!",
-      text: `
-        <div class="anleitung-box">
-          • Person liegt auf Rücken<br>
-          • Oberkörper ist entkleidet<br>
-          • Kopf ist überstreckt
-        </div>
-        <img src="bilder/atmungprüfen.jpeg" alt="atmungprüfen" style="max-width:100%;border-radius:8px;">
-      `,
-      nextOptions: [
-        { label: "✅ Atmung vorhanden", next: "seitenlage" },
-        { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
-      ]
-      <p class="firma-hinweis">Die Bilder werden freundlicher Weise durch die <b>ANB - Akademie für Notfallmanagement und Brandschutz GmbH</b> zur Verfügung gestellt</p>
-    },
+  title: "Prüfe die Atmung für 10 Sekunden!",
+  text: `
+    <div class="anleitung-box">
+      • Person liegt auf Rücken<br>
+      • Oberkörper ist entkleidet<br>
+      • Kopf ist überstreckt
+    </div>
+    <img src="bilder/atmungprüfen.jpeg" alt="atmungprüfen" style="max-width:100%;border-radius:8px;">
+  `,
+  hinweis: 'Die Bilder werden freundlicherweise durch die <b>ANB – Akademie für Notfallmanagement und Brandschutz GmbH</b> zur Verfügung gestellt.',
+  nextOptions: [
+    { label: "✅ Atmung vorhanden", next: "seitenlage" },
+    { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
+  ]
+},
     seitenlage: {
       title: "Stabile Seitenlage",
       text: `
@@ -290,6 +290,10 @@
     } else {
       clearTimer();
     }
+
+  if(step.hinweis){
+  html += `<p class="firma-hinweis">${step.hinweis}</p>`;
+}
   }
 
   function goBack() {
