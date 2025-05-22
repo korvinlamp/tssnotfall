@@ -88,21 +88,18 @@
       font-weight: bold;
       animation: blink 1s infinite;
     }
-      
-
-      .firma-hinweis {
-  color: #999;
-  font-size: 16px;
-  margin-top: 10px;
-}
-  
+    .firma-hinweis {
+      color: #999;
+      font-size: 16px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 
 <div id="alarm-section" class="container">
   <h2>🚨 Sanitäter Alarmieren</h2>
-  <form id="alarmForm">
+  <form id="alarmForm" action="javascript:void(0);">
     <label for="raum">Raum:</label><br>
     <input type="text" id="raum" placeholder="z. B. N01" required><br>
     <button type="submit" class="btn-red">🚨 Alarm senden</button>
@@ -152,21 +149,21 @@
       next: null
     },
     "atmung-vorbereitung": {
-  title: "Prüfe die Atmung für 10 Sekunden!",
-  text: `
-    <div class="anleitung-box">
-      • Person liegt auf Rücken<br>
-      • Oberkörper ist entkleidet<br>
-      • Kopf ist überstreckt
-    </div>
-    <img src="bilder/atmungprüfen.jpeg" alt="atmungprüfen" style="max-width:100%;border-radius:8px;">
-  `,
-  hinweis: 'Die Bilder werden freundlicherweise durch die <b>ANB – Akademie für Notfallmanagement und Brandschutz GmbH</b> zur Verfügung gestellt.',
-  nextOptions: [
-    { label: "✅ Atmung vorhanden", next: "seitenlage" },
-    { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
-  ]
-},
+      title: "Prüfe die Atmung für 10 Sekunden!",
+      text: `
+        <div class="anleitung-box">
+          • Person liegt auf Rücken<br>
+          • Oberkörper ist entkleidet<br>
+          • Kopf ist überstreckt
+        </div>
+        <img src="bilder/atmungprüfen.jpeg" alt="atmungprüfen" style="max-width:100%;border-radius:8px;">
+      `,
+      hinweis: 'Die Bilder werden freundlicherweise durch die <b>ANB – Akademie für Notfallmanagement und Brandschutz GmbH</b> zur Verfügung gestellt.',
+      nextOptions: [
+        { label: "✅ Atmung vorhanden", next: "seitenlage" },
+        { label: "❌ Keine Atmung", next: "keinatmung-notruf" }
+      ]
+    },
     seitenlage: {
       title: "Stabile Seitenlage",
       text: `
@@ -179,8 +176,8 @@
       `,
       hinweis: 'Die Bilder werden freundlicherweise durch die <b>ANB – Akademie für Notfallmanagement und Brandschutz GmbH</b> zur Verfügung gestellt.',
       next: "atmung-notruf"
-        },
-      "atmung-notruf": {
+    },
+    "atmung-notruf": {
       title: "📞 Notruf 112 & AED holen lassen",
       text: `
         <div class="anleitung-box">
@@ -223,10 +220,10 @@
         <div><button class="btn-red" onclick="toggleMetronome(this)">🕒 Takt starten</button></div>
       `,
       hinweis: 'Die Bilder werden freundlicherweise durch die <b>ANB – Akademie für Notfallmanagement und Brandschutz GmbH</b> zur Verfügung gestellt.',
-     nextOptions: [
+      nextOptions: [
         { label: "⚡️ Defibrillator vorhanden", next: "defibrillation" }
       ]
-    }
+    },
     defibrillation: {
       title: "Defibrillator einsetzen",
       text: `
