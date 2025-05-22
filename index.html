@@ -223,8 +223,22 @@
         <div><button class="btn-red" onclick="toggleMetronome(this)">🕒 Takt starten</button></div>
       `,
       hinweis: 'Die Bilder werden freundlicherweise durch die <b>ANB – Akademie für Notfallmanagement und Brandschutz GmbH</b> zur Verfügung gestellt.',
-      next: null
+     nextOptions: [
+        { label: "Defibrillator vorhanden", next: "defibrillation" }
+      ]
     }
+    defibrillation: {
+      title: "Defibrillator einsetzen",
+      text: `
+        <div class="anleitung-box">
+          • Wiederbelebung fortsetzen!<br>
+          • Defibrillator einschalten<br>
+          • Anweisungen des Defibrillators folgen
+        </div>
+        <img src="bilder/defibrillation.jpeg" alt="defibrillation" style="max-width:100%;border-radius:8px;">
+      `,
+      next: null
+    },
   };
 
   // --- Show Anleitung Section ---
