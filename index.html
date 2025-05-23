@@ -392,7 +392,7 @@
   document.getElementById("alarmForm").addEventListener("submit", function(event){
     event.preventDefault();
     const raum = document.getElementById("raum").value;
-    const url = "https://maker.ifttt.com/trigger/sanitaeter-alarm/with/key/cCSCnLcOR4Lqjv_YDsEOYr?value1=" + encodeURIComponent(raum);
+    const url = "https://maker.ifttt.com/trigger/jugendforscht/with/key/cCSCnLcOR4Lqjv_YDsEOYr?value1=" + encodeURIComponent(raum);
     fetch(url).finally(() => {
       document.getElementById("alarmForm").style.display = "none";
       document.getElementById("response").innerText = "✅ Sanitäter sind alarmiert!";
